@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.{ActorSystem, Props}
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.pattern.ask
 import akka.stream.ActorMaterializer
@@ -30,9 +29,7 @@ object ClusterApp extends App {
       path("events") {
         get {
           complete(
-          (eventActor ? GetEvents()).mapTo[Result].map { result =>
-            HttpEntity(ContentTypes.`application/json`, result.events.toString())
-          })
+          (eventActor ? GetEvents()).mapTo[Result].map(template))
         }
       })
 
@@ -42,4 +39,10 @@ object ClusterApp extends App {
 
   println(s"HTTP server available at http://$host:$port")
   Http().bindAndHandle(routes, host, port)
+
+  private def template(result: Result): String =
+    s"""|Akka Cluster Events
+        |====================
+        |
+        |${result.events.mkString("\n")}""".stripMargin
 }

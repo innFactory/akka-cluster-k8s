@@ -15,8 +15,8 @@ dockerUpdateLatest := true
 dockerRepository := Some("XXXX.dkr.ecr.us-east-1.amazonaws.com") //AWS Repository angeben!
 packageName in Docker := "k8sakkaclustersample" //Docker Image Name
 endpoints += HttpEndpoint("http", HttpIngress(Vector(80, 443), Vector.empty, Vector.empty))
-
-deployMinikubeAkkaClusterBootstrapContactPoints := 1
+enableAkkaClusterBootstrap := true
+deployMinikubeAkkaClusterBootstrapContactPoints := 3
 deployMinikubeRpArguments ++= Vector(
   "--ingress-annotation", "ingress.kubernetes.io/rewrite-target=/",
   "--ingress-annotation", "nginx.ingress.kubernetes.io/rewrite-target=/"
